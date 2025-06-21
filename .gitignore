@@ -1,0 +1,20 @@
+# Environment files with sensitive data
+configs/environment/environment
+
+# API Keys and secrets
+*.key
+*.pem
+.env
+.env.local
+.env.production
+
+# System-specific files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
