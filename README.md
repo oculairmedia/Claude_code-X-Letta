@@ -76,9 +76,10 @@ To apply these configurations:
    cp configs/letta-mcp/opt-letta-mcp_config.json /opt/letta/mcp_config.json
    ```
 
-3. **Copy environment config**:
+3. **Copy and configure environment**:
    ```bash
-   cp configs/environment/environment /etc/claude-mcp/
+   cp configs/environment/environment.example /etc/claude-mcp/environment
+   # Edit /etc/claude-mcp/environment and add your actual API keys
    ```
 
 4. **Copy systemd services**:
