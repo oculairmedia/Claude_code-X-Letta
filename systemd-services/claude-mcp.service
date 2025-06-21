@@ -6,10 +6,8 @@ After=network.target
 Type=simple
 User=mcp-user
 WorkingDirectory=/opt/stacks/claude-code-mcp
-Environment="ANTHROPIC_API_KEY=your-api-key-here"
-Environment="MCP_CLAUDE_DEBUG=true"
-Environment="MCP_TRANSPORT=http"
-Environment="PORT=3456"
+# Load environment from secure file
+EnvironmentFile=/etc/claude-mcp/environment
 ExecStart=/usr/bin/node /opt/stacks/claude-code-mcp/dist/server.js --http
 Restart=always
 RestartSec=10

@@ -6,6 +6,9 @@ LETTA_BASE_URL=https://letta2.oculair.ca
 LETTA_AUTH_TOKEN=lettaSecurePass123
 LETTA_BARE_PASSWORD=password lettaSecurePass123
 
+# API Keys
+ANTHROPIC_API_KEY=your-api-key-here
+
 # Server Configuration
 MCP_TRANSPORT=http
 PORT=3456
