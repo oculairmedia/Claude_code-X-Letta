@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "letta-tools": {
+      "url": "http://192.168.50.90:3001/mcp"
+    },
+    "claude-code-mcp": {
+      "command": "node",
+      "args": ["/opt/stacks/claude-code-mcp/dist/server.js"],
+      "env": {}
+    }
+  }
+}

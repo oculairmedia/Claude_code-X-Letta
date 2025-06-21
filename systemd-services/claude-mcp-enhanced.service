@@ -1,0 +1,76 @@
+[Unit]
+Description=Claude Code MCP SSE Server (Enhanced)
+After=network.target
+Documentation=https://github.com/steipete/claude-code-mcp
+
+[Service]
+Type=simple
+User=mcp-user
+Group=mcp-user
+WorkingDirectory=/opt/stacks/claude-code-mcp
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/tmp /var/log/claude-mcp
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+RemoveIPC=true
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=512
+MemoryHigh=2G
+MemoryMax=4G
+CPUQuota=200%
+
+# Environment configuration
+EnvironmentFile=-/etc/claude-mcp/environment
+Environment="NODE_ENV=production"
+Environment="MCP_TRANSPORT=http"
+Environment="PORT=3456"
+Environment="MCP_CLAUDE_DEBUG=false"
+Environment="LOG_FORMAT=json"
+
+# Session management
+Environment="MAX_SESSIONS=100"
+Environment="SESSION_TIMEOUT_MS=3600000"
+Environment="CLEANUP_INTERVAL_MS=300000"
+
+# Process management
+Environment="EXECUTION_TIMEOUT_MS=1800000"
+Environment="MAX_ASYNC_PROCESSES=50"
+Environment="ASYNC_PROCESS_TIMEOUT_MS=1800000"
+
+# Validation
+Environment="MAX_PROMPT_LENGTH=50000"
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=claude-mcp
+
+# Execution
+ExecStart=/usr/bin/node /opt/stacks/claude-code-mcp/dist/server.js --http
+ExecReload=/bin/kill -USR2 $MAINPID
+
+# Restart policy
+Restart=always
+RestartSec=10
+RestartPreventExitStatus=0
+
+# Health check
+ExecStartPost=/bin/sleep 5
+ExecStartPost=/usr/bin/curl -f http://localhost:3456/health || exit 1
+
+[Install]
+WantedBy=multi-user.target

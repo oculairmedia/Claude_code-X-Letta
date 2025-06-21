@@ -1,0 +1,36 @@
+{
+    "mcpServers": {
+        "jobspy": {
+            "transport": "sse",
+            "url": "http://100.93.254.12:9232/sse"
+        },
+        "crawl4ai": {
+            "transport": "sse",
+            "url": "http://192.168.50.90:9221/sse"
+        },
+        "metamcp": {
+            "transport": "sse",
+            "url": "http://192.168.50.90:12006/sse"
+        },
+        "postiz": {
+            "transport": "sse",
+            "url": "http://100.93.254.12:3084/sse"
+        },
+        "Ghostblogging": {
+            "transport": "sse",
+            "url": "http://100.93.254.12:3064/sse"
+        },
+        "letta": {
+            "transport": "http",
+            "url": "http://192.168.50.90:3001/mcp"
+        },
+        "bookstack": {
+            "transport": "sse",
+            "url": "http://100.93.254.12:3054/sse"
+        },
+        "planeprojects": {
+            "transport": "sse",
+            "url": "http://192.168.50.90:3094/sse"
+        }
+    }
+}

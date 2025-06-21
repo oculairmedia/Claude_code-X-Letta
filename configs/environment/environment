@@ -1,0 +1,27 @@
+# Claude MCP Server Environment Configuration
+# This file contains sensitive configuration and should be protected
+
+# Letta API Configuration
+LETTA_BASE_URL=https://letta2.oculair.ca
+LETTA_AUTH_TOKEN=lettaSecurePass123
+LETTA_BARE_PASSWORD=password lettaSecurePass123
+
+# Server Configuration
+MCP_TRANSPORT=http
+PORT=3456
+MCP_CLAUDE_DEBUG=true
+
+# Security Configuration
+SESSION_CLEANUP_INTERVAL=3600000
+SESSION_INACTIVE_TIMEOUT=1800000
+MAX_SESSIONS=100
+MAX_PROMPT_LENGTH=10000
+MAX_ASYNC_PROCESSES=10
+
+# Monitoring
+WEBHOOK_URL=
+HEALTH_CHECK_INTERVAL=60000
+
+# Logging
+LOG_LEVEL=debug
+LOG_FORMAT=text

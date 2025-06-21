@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "letta-server": {
+      "transport": "http",
+      "url": "http://192.168.50.90:3001/mcp"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+[Unit]
+Description=Claude Code MCP SSE Server
+After=network.target
+
+[Service]
+Type=simple
+User=mcp-user
+Group=mcp-user
+WorkingDirectory=/opt/stacks/claude-code-mcp
+
+# Load environment from secure file
+EnvironmentFile=/etc/claude-mcp/environment
+
+# Service command
+ExecStart=/usr/bin/node /opt/stacks/claude-code-mcp/dist/server.js --http
+
+# Restart configuration
+Restart=always
+RestartSec=10
+
+# Basic security (relaxed for system access)
+# NoNewPrivileges=true - Disabled to allow sudo
+# PrivateTmp=true - Disabled to access system /tmp
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=claude-mcp
+
+[Install]
+WantedBy=multi-user.target
