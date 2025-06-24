@@ -329,6 +329,13 @@ export class ClaudeCodeServer {
   }
 
   /**
+   * Connect to a transport
+   */
+  async connectTransport(transport: any): Promise<void> {
+    await this.server.connect(transport);
+  }
+
+  /**
    * Start the MCP server
    */
   async run(): Promise<void> {
