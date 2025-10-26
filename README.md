@@ -135,22 +135,43 @@ This server exposes one primary tool:
 
 ### `claude_code`
 
-Executes a prompt directly using the Claude Code CLI with `--dangerously-skip-permissions`.
+Your versatile multi-modal assistant for code, file, Git, and terminal operations via Claude CLI. Executes prompts directly using the Claude Code CLI with `--dangerously-skip-permissions`.
+
+**Capabilities:**
+- **File operations**: Create, read, (fuzzy) edit, move, copy, delete, list files, analyze/OCR images, file content analysis
+- **Code operations**: Generate, analyze, refactor, and fix code
+- **Git operations**: Stage, commit, push, tag workflows
+- **Terminal operations**: Run any CLI command, open URLs
+- **Web operations**: Web search and content summarization
+- **Multi-step workflows**: Version bumps, changelog updates, release tagging, etc.
+- **GitHub integration**: Create PRs, check CI status
+- **Analysis**: Get a second opinion on code issues and suggestions
 
 **Arguments:**
-- `prompt` (string, required): The prompt to send to Claude Code.
-- `options` (object, optional):
-  - `tools` (array of strings, optional): Specific Claude tools to enable (e.g., `Bash`, `Read`, `Write`). Common tools are enabled by default.
+- `prompt` (string, required): The detailed natural language prompt for Claude to execute.
+- `workFolder` (string, optional): The working directory for the Claude CLI execution. Must be an absolute path. Mandatory when using file operations or referencing any file. If not specified, defaults to the user's home directory.
+
+**Execution timeout**: 30 minutes maximum per request.
 
 **Example MCP Request:**
 ```json
 {
-  "toolName": "claude_code:claude_code",
+  "toolName": "claude_code",
   "arguments": {
-    "prompt": "Refactor the function foo in main.py to be async."
+    "prompt": "Refactor the function foo in main.py to be async.",
+    "workFolder": "/Users/username/my_project"
   }
 }
 ```
+
+**Prompt Tips:**
+1. Be concise, explicit, and step-by-step for complex tasks
+2. For multi-line text, write it to a temporary file in the project root, use that file, then delete it
+3. If you get a timeout, split the task into smaller steps
+4. If you're stuck or want advice, ask `claude_code` to analyze a problem and suggest solutions (specify analysis only, no modifications)
+5. If `workFolder` is set to the project path, you can use relative paths for files in your prompts
+6. Claude Code is excellent at complex multi-step file operations and refactorings
+7. Combine file operations, README updates, and Git commands in sequences
 
 ### Examples
 
@@ -183,33 +204,33 @@ This server, through its unified `claude_code` tool, unlocks a wide range of pow
     -   `"Analyze my_script.py for potential bugs and suggest improvements."`
 
 2.  **File System Operations (Create, Read, Edit, Manage):**
-    -   **Creating Files:** `"Your work folder is /Users/steipete/my_project\n\nCreate a new file named 'config.yml' in the 'app/settings' directory with the following content:\nport: 8080\ndatabase: main_db"`
-    -   **Editing Files:** `"Your work folder is /Users/steipete/my_project\n\nEdit file 'public/css/style.css': Add a new CSS rule at the end to make all 'h2' elements have a 'color: navy'."`
-    -   **Moving/Copying/Deleting:** `"Your work folder is /Users/steipete/my_project\n\nMove the file 'report.docx' from the 'drafts' folder to the 'final_reports' folder and rename it to 'Q1_Report_Final.docx'."`
+    -   **Creating Files:** With `workFolder` set to `/Users/steipete/my_project`: `"Create a new file named 'config.yml' in the 'app/settings' directory with the following content:\nport: 8080\ndatabase: main_db"`
+    -   **Editing Files:** With `workFolder` set to `/Users/steipete/my_project`: `"Edit file 'public/css/style.css': Add a new CSS rule at the end to make all 'h2' elements have a 'color: navy'."`
+    -   **Moving/Copying/Deleting:** With `workFolder` set to `/Users/steipete/my_project`: `"Move the file 'report.docx' from the 'drafts' folder to the 'final_reports' folder and rename it to 'Q1_Report_Final.docx'."`
 
 3.  **Version Control (Git):**
-    -   `"Your work folder is /Users/steipete/my_project\n\n1. Stage the file 'src/main.java'.\n2. Commit the changes with the message 'feat: Implement user authentication'.\n3. Push the commit to the 'develop' branch on origin."`
+    -   With `workFolder` set to `/Users/steipete/my_project`: `"1. Stage the file 'src/main.java'.\n2. Commit the changes with the message 'feat: Implement user authentication'.\n3. Push the commit to the 'develop' branch on origin."`
 
 4.  **Running Terminal Commands:**
-    -   `"Your work folder is /Users/steipete/my_project/frontend\n\nRun the command 'npm run build'."`
+    -   With `workFolder` set to `/Users/steipete/my_project/frontend`: `"Run the command 'npm run build'."`
     -   `"Open the URL https://developer.mozilla.org in my default web browser."`
 
 5.  **Web Search & Summarization:**
     -   `"Search the web for 'benefits of server-side rendering' and provide a concise summary."`
 
 6.  **Complex Multi-Step Workflows:**
-    -   Automate version bumps, update changelogs, and tag releases: `"Your work folder is /Users/steipete/my_project\n\nFollow these steps: 1. Update the version in package.json to 2.5.0. 2. Add a new section to CHANGELOG.md for version 2.5.0 with the heading '### Added' and list 'New feature X'. 3. Stage package.json and CHANGELOG.md. 4. Commit with message 'release: version 2.5.0'. 5. Push the commit. 6. Create and push a git tag v2.5.0."`
+    -   Automate version bumps, update changelogs, and tag releases with `workFolder` set to `/Users/steipete/my_project`: `"Follow these steps: 1. Update the version in package.json to 2.5.0. 2. Add a new section to CHANGELOG.md for version 2.5.0 with the heading '### Added' and list 'New feature X'. 3. Stage package.json and CHANGELOG.md. 4. Commit with message 'release: version 2.5.0'. 5. Push the commit. 6. Create and push a git tag v2.5.0."`
 
     <img src="assets/multistep_example.png" alt="Complex multi-step operation example" width="50%">
 
 7.  **Repairing Files with Syntax Errors:**
-    -   `"Your work folder is /path/to/project\n\nThe file 'src/utils/parser.js' has syntax errors after a recent complex edit that broke its structure. Please analyze it, identify the syntax errors, and correct the file to make it valid JavaScript again, ensuring the original logic is preserved as much as possible."`
+    -   With `workFolder` set to `/path/to/project`: `"The file 'src/utils/parser.js' has syntax errors after a recent complex edit that broke its structure. Please analyze it, identify the syntax errors, and correct the file to make it valid JavaScript again, ensuring the original logic is preserved as much as possible."`
 
 8.  **Interacting with GitHub (e.g., Creating a Pull Request):**
-    -   `"Your work folder is /Users/steipete/my_project\n\nCreate a GitHub Pull Request in the repository 'owner/repo' from the 'feature-branch' to the 'main' branch. Title: 'feat: Implement new login flow'. Body: 'This PR adds a new and improved login experience for users.'"`
+    -   With `workFolder` set to `/Users/steipete/my_project`: `"Create a GitHub Pull Request in the repository 'owner/repo' from the 'feature-branch' to the 'main' branch. Title: 'feat: Implement new login flow'. Body: 'This PR adds a new and improved login experience for users.'"`
 
 9.  **Interacting with GitHub (e.g., Checking PR CI Status):**
-    -   `"Your work folder is /Users/steipete/my_project\n\nCheck the status of CI checks for Pull Request #42 in the GitHub repository 'owner/repo'. Report if they have passed, failed, or are still running."`
+    -   With `workFolder` set to `/Users/steipete/my_project`: `"Check the status of CI checks for Pull Request #42 in the GitHub repository 'owner/repo'. Report if they have passed, failed, or are still running."`
 
 ### Correcting GitHub Actions Workflow
 
@@ -221,7 +242,7 @@ This example illustrates `claude_code` handling a more complex, multi-step task,
 
 <img src="assets/claude_code_multistep_example.png" alt="Claude Code multi-step example" width="50%">
 
-**CRITICAL: Remember to provide Current Working Directory (CWD) context in your prompts for file system or git operations (e.g., `"Your work folder is /path/to/project\n\n...your command..."`).**
+**IMPORTANT: When using file operations or git commands, set the `workFolder` parameter to specify the working directory. If `workFolder` is provided, you can use relative paths in your prompts. Without it, the tool defaults to your home directory.**
 
 ## Troubleshooting
 
@@ -265,11 +286,15 @@ For detailed testing documentation, see our [E2E Testing Guide](./docs/e2e-testi
 
 The server's behavior can be customized using these environment variables:
 
-- `CLAUDE_CLI_PATH`: Absolute path to the Claude CLI executable.
-  - Default: Checks `~/.claude/local/claude`, then falls back to `claude` (expecting it in PATH).
+- `CLAUDE_CLI_NAME`: Override the Claude CLI binary name or provide an absolute path (default: `claude`).
+  - Supported formats:
+    - Simple name: `CLAUDE_CLI_NAME=claude-custom` or `CLAUDE_CLI_NAME=claude-v2`
+    - Absolute path: `CLAUDE_CLI_NAME=/path/to/custom/claude`
+  - When not set, the server checks `~/.claude/local/claude` first, then falls back to `claude` in PATH.
+  - Relative paths are not allowed and will throw an error.
 - `MCP_CLAUDE_DEBUG`: Set to `true` for verbose debug logging from this MCP server. Default: `false`.
 
-These can be set in your shell environment or within the `env` block of your `mcp.json` server configuration (though the `env` block in `mcp.json` examples was removed for simplicity, it's still a valid way to set them for the server process if needed).
+These can be set in your shell environment or within the `env` block of your `mcp.json` server configuration.
 
 ## Contributing
 
